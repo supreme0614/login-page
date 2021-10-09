@@ -5,7 +5,7 @@ import mysql.connector
 mydb = mysql.connector.connect(
     host='localhost',
     user='Sirojiddin',
-    passwd='siroj2002',
+    passwd='',
     database='Users'
 )
 
@@ -15,13 +15,38 @@ my_cursor = mydb.cursor()
 class User:
 
     def __init__(self, name=None, login=None, password=None, age=None):
-        pass
+        self.name = name
+        self.login = login
+        self.password = password
+        self.age = age
+        self.entering_values = ["1", "2", "3"]
+        self.entering()
 
     def entering_massage(self):
-        pass
+        self.clear()
+        print("""
+                Hello, welcome
+            1 -> Register
+            2 -> Login
+            3 -> Exit
+
+        """)
 
     def entering(self):
-        pass
+        self.entering_massage()
+        value = input(f"{entering_values}: ").strip()
+        while not value.isdigit() or value not in self.entering_values:
+            self.entering_massage()
+            value = input(f"{entering_values}: ").strip()
+        if value == self.entering_values[0]:
+            self.register()
+
+        elif value == self.entering_values[1]:
+            self.log_in()
+        else:
+            self.clear()
+            print("bye")
+            exit()
 
     def register(self):
         pass
@@ -57,11 +82,7 @@ class User:
         pass
 
     def clear(self):
-        pass
+        os.system('clear')
 
     def cheking_is_empty(self):
         pass
-
-
-person = User()
-
