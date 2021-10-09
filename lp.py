@@ -20,7 +20,9 @@ class User:
         self.password = password
         self.age = age
         self.entering_values = ["1", "2", "3"]
+        self.all_data = []
         self.entering()
+
 
     def entering_massage(self):
         self.clear()
@@ -49,13 +51,50 @@ class User:
             exit()
 
     def register(self):
-        pass
+        self.clear()
+        name_input = input("Enter your name :").strip().capitalize()
+        while not name_input.isalpha():
+            self.clear()
+            name_input = input("Enter your name: ").strip().capitalize()
+        self.name = name_input
+        login_input = input("Enter your login: ").strip().lower()
+        while not self.cheking_is_empty(login_input) or not self.cheking_login_from_db(login_input):
+            self.clear()
+            login_input = input("Enter your login: ").strip().lower()
+        self.login = login_input
+        password_input = input("Enter your password: ").strip()
+        confirm = input("Confirm your password: ").strip()
+        while not self.cheking_is_empty(password_input) or password_input != confirm:
+            self.clear()
+            password_input = input("Enter your password: ").strip()
+            confirm = input("Confirm your password: ").strip()
+        self.password = password_input
 
-    def insert_to_db(self):
-        pass
+        age_input = input("Enter your age: ").strip()
+        while not age_input.isdigit():
+            self.clear()
+            age_input = input("Enter your age: ").strip()
+        self.age = age_input
 
-    def cheking_login_from_db(self):
-        pass
+        self.insert_to_db(name_input, login_input, password_input, age_input)
+        self.collect(self.login)
+        self.actions_after_entering()
+
+    def insert_to_db(self, name, login, password, age):
+        q = f"insert into Persons(name, login, oassword, age)"\
+            f"values('{name}', '{login}', '{password}', '{age}')"
+        my_cursor.execute(q)
+        mydb.commit()
+
+
+    def cheking_login_from_db(self, values):
+        q = f"select * from Persons where login='{values}'"
+        my_cursor.execute(q)
+
+        if my_cursor.fetchall():
+            return False
+        return True
+
 
     def log_in(self):
         pass
@@ -78,11 +117,15 @@ class User:
     def delete_account(self):
         pass
 
-    def collect(self):
-        pass
-
+    def collect(self, value):
+        q = f"select * from Persons where login='{value}'"
+        my_cursor.execute(q)
+        self.all_data = my_cursor.fetchall()
     def clear(self):
         os.system('clear')
 
-    def cheking_is_empty(self):
-        pass
+    def cheking_is_empty(self, value):
+        if value:
+            return True
+        return False
+
